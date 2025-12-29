@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OLE Weather</title>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/869/869869.png">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="weather-card">
+        <div class="app-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/869/869869.png" alt="Logo" class="main-logo">
+            <h1>OLE Weather</h1>
+        </div>
+
+        <div class="search-section">
+            <input type="text" id="search-input" placeholder="ค้นหาเมือง..." value="Bangkok">
+            <button id="search-btn" title="ค้นหา">🔍</button>
+            <button id="gps-btn" title="ตำแหน่งของฉัน">📍</button>
+        </div>
+
+        <div id="main-content" style="display: none;">
+            <div class="current-main">
+                <div class="temp-group">
+                    <img id="main-icon" class="weather-icon red-sun" src="" alt="icon">
+                    <span id="current-temp">--</span>
+                    <span class="unit">°C</span>
+                </div>
+                <div class="info-group">
+                    <h2 id="city-name">--</h2>
+                    <p id="date-text">--</p>
+                    <p id="description">--</p>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div>โอกาสฝนตก: <span id="rain-chance">0</span>%</div>
+                <div>ความชื้น: <span id="humidity">0</span>%</div>
+                <div>ลม: <span id="wind-speed">0</span> กม./ชม.</div>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-link active" onclick="changeTab(event, 'temp')">อุณหภูมิ</button>
+                <button class="tab-link" onclick="changeTab(event, 'rain')">โอกาสฝนตก</button>
+                <button class="tab-link" onclick="changeTab(event, 'wind')">ลม</button>
+            </div>
+
+            <div class="chart-box">
+                <canvas id="weatherChart"></canvas>
+            </div>
+
+            <div class="forecast-row" id="forecast-container"></div>
+
+            <div id="map"></div>
+        </div>
+        
+        <div id="loader">กำลังโหลดข้อมูล...</div>
+
+        <div class="footer-credit">
+            Developed by <strong>Yutthana Pumamob</strong>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
