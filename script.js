@@ -1,7 +1,7 @@
 const apiKey = "541b300d35f3acf5ca1b22f82ca0f261";
 let myChart = null;
 let map = null;
-let fullForecastData = []; 
+let fullForecastData = [];
 let currentChartType = 'temp';
 let selectedDayIndex = 0;
 
@@ -12,7 +12,6 @@ async function searchLocation(query) {
     document.getElementById("loader").style.display = "block";
     document.getElementById("main-content").style.display = "none";
 
-    // ใช้ Nominatim API เพื่อหาพิกัดจากชื่อภาษาไทย
     const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
 
     try {
@@ -22,8 +21,6 @@ async function searchLocation(query) {
         if (data && data.length > 0) {
             const lat = data[0].lat;
             const lon = data[0].lon;
-            
-            // เมื่อได้พิกัดแล้ว ให้ไปดึงข้อมูลสภาพอากาศ
             await fetchWeather(query, lat, lon);
         } else {
             alert("ไม่พบสถานที่: " + query);
@@ -49,18 +46,14 @@ async function fetchWeather(displayName, lat, lon) {
         if (dataNow.cod !== 200) throw new Error(dataNow.message);
 
         fullForecastData = dataFore.list;
-        selectedDayIndex = 0; 
+        selectedDayIndex = 0;
         
-        // อัปเดต UI
         updateUI(dataNow, dataFore, displayName);
-        
-        // แสดงกราฟวันแรก
-        showDayDetail(0); 
+        showDayDetail(0);
 
         document.getElementById("loader").style.display = "none";
         document.getElementById("main-content").style.display = "block";
 
-        // แก้ไขปัญหาวาดแผนที่แหว่ง
         setTimeout(() => { if (map) map.invalidateSize(); }, 400);
     } catch (error) {
         alert("ไม่พบข้อมูลสภาพอากาศ: " + error.message);
@@ -70,23 +63,18 @@ async function fetchWeather(displayName, lat, lon) {
 
 // --- 3. อัปเดตข้อมูลบนหน้าจอ ---
 function updateUI(now, fore, displayName) {
-    // ใช้ชื่อภาษาไทยที่ค้นหา ถ้าไม่มีให้ใช้ชื่อจาก API
     document.getElementById("city-name").innerText = displayName || now.name;
     document.getElementById("current-temp").innerText = Math.round(now.main.temp);
     document.getElementById("description").innerText = now.weather[0].description;
     document.getElementById("humidity").innerText = now.main.humidity;
     document.getElementById("wind-speed").innerText = now.wind.speed;
     
-    // ไอคอนหลัก (ใช้ Class .red-sun เพื่อย้อมสีใน CSS)
     document.getElementById("main-icon").src = `https://openweathermap.org/img/wn/${now.weather[0].icon}@4x.png`;
-    
-    // โอกาสฝนตกของช่วงเวลาปัจจุบัน
     document.getElementById("rain-chance").innerText = Math.round(fore.list[0].pop * 100);
 
     const d = new Date();
     document.getElementById("date-text").innerText = d.toLocaleDateString('th-TH', { weekday: 'long', hour: '2-digit', minute:'2-digit' });
 
-    // จัดการพยากรณ์รายวัน (5 วัน)
     const container = document.getElementById("forecast-container");
     container.innerHTML = "";
     
@@ -130,7 +118,7 @@ function updateUI(now, fore, displayName) {
 
 // --- 4. กราฟและการสลับแท็บ ---
 function showDayDetail(dayIdx) {
-    const startIndex = dayIdx * 8; 
+    const startIndex = dayIdx * 8;
     const daySubset = fullForecastData.slice(startIndex, startIndex + 8);
     updateChart(currentChartType, daySubset);
 }
@@ -144,7 +132,13 @@ function changeTab(event, type) {
 
 function updateChart(type, dataList) {
     const ctx = document.getElementById('weatherChart').getContext('2d');
-    const labels = dataList.map(item => item.dt_txt.substring(11, 16));
+    
+    // แก้ไขจุดนี้: แปลง Unix Timestamp เป็นเวลาท้องถิ่น (Local Time)
+    const labels = dataList.map(item => {
+        const date = new Date(item.dt * 1000); 
+        return date.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', hour12: false });
+    });
+
     let dataValues = [], unit = "", color = "#fbbc04";
 
     if (type === 'temp') {
@@ -179,9 +173,9 @@ function updateChart(type, dataList) {
                     formatter: (v) => v + unit
                 }
             },
-            scales: { 
-                y: { display: false, beginAtZero: type === 'rain' }, 
-                x: { grid: { display: false } } 
+            scales: {
+                y: { display: false, beginAtZero: type === 'rain' },
+                x: { grid: { display: false } }
             }
         }
     });
@@ -189,8 +183,8 @@ function updateChart(type, dataList) {
 
 // --- 5. แผนที่และ GPS ---
 function updateMap(lat, lon) {
-    if (map) { 
-        map.setView([lat, lon], 12); 
+    if (map) {
+        map.setView([lat, lon], 12);
     } else {
         map = L.map('map').setView([lat, lon], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
