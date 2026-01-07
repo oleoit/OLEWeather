@@ -22,7 +22,6 @@ body {
     padding: 24px;
 }
 
-/* --- New Header Section --- */
 .app-header {
     display: flex;
     align-items: center;
@@ -38,7 +37,7 @@ body {
 .app-header h1 {
     font-size: 24px;
     margin: 0;
-    color: #1a73e8; /* สีน้ำเงินสไตล์ Google */
+    color: #1a73e8; 
     font-weight: 500;
 }
 
@@ -91,15 +90,13 @@ body {
     vertical-align: top; 
 }
 
-/* --- Weather Icon Effects --- */
-.red-sun {
-    /* ทำให้พระอาทิตย์ดูแดงส้ม โดยไม่กระทบเมฆขาว */
-    filter: saturate(200%) drop-shadow(0 0 8px #ff0000);
-}
-
 .weather-icon {
     width: 64px;
     height: 64px;
+}
+
+.red-sun {
+    filter: saturate(150%) drop-shadow(0 0 5px #ffcc00);
 }
 
 /* --- Stats Section --- */
@@ -163,7 +160,7 @@ body {
 
 .forecast-item { 
     text-align: center; 
-    min-width: 78px; 
+    min-width: 80px; 
     font-size: 13px; 
     cursor: pointer; 
     padding: 10px 5px; 
@@ -193,17 +190,14 @@ body {
     border-radius: 12px; 
     border: 1px solid #dfe1e5; 
     z-index: 1; 
-    display: block; 
 }
 
-/* --- Loader --- */
 #loader { 
     text-align: center; 
     padding: 40px; 
     color: #70757a; 
 }
 
-/* --- Footer Credit Section --- */
 .footer-credit {
     margin-top: 25px;
     padding-top: 15px;
@@ -213,13 +207,8 @@ body {
     color: #70757a;
 }
 
-.footer-credit strong {
-    color: #202124;
-}
-
-/* Responsive Adjustment */
 @media (max-width: 480px) {
     .current-main { flex-direction: column; align-items: flex-start; gap: 10px; }
-    .stats { flex-wrap: wrap; }
+    .stats { flex-wrap: wrap; gap: 10px; }
     .forecast-row { justify-content: flex-start; }
 }
